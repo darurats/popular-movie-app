@@ -1,7 +1,9 @@
 package com.darurats.popularmovies.fragments;
 
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.AsyncTaskLoader;
+import android.support.v4.content.Loader;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
@@ -29,10 +31,9 @@ import java.util.ArrayList;
  * {@link GridLayoutManager}.
  */
 public class MainFragment extends Fragment
-        implements MovieAdapter.MovieAdapterOnClickHandler {
+        implements MovieAdapter.MovieAdapterOnClickHandler, LoaderManager.LoaderCallbacks<ArrayList<Movie>> {
 
-    private static final String STATE_LIST = "MOVIES";
-    private static final String STATE_POSITION = "POSITION";
+    private static final int POPULAR_MOVIES_LOADER_ID = 1;
 
     private RecyclerView mRecyclerView;
     private MovieAdapter mMovieAdapter;
@@ -44,16 +45,7 @@ public class MainFragment extends Fragment
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        /* Once all of our views are setup, we can load the movie data. */
-        if (savedInstanceState != null) {
-            ArrayList<Movie> mMovies = savedInstanceState.getParcelableArrayList(STATE_LIST);
-            int scrollPosition = savedInstanceState.getInt(STATE_POSITION);
-
-            mMovieAdapter.setMovieData(mMovies);
-            mRecyclerView.scrollToPosition(scrollPosition);
-        } else {
-            loadMovieData();
-        }
+        loadMovieData();
     }
 
     @Override
@@ -110,11 +102,7 @@ public class MainFragment extends Fragment
     private void loadMovieData() {
         showMovieDataView();
 
-        FetchMovieTask movieTask = new FetchMovieTask();
-        String sort = PreferenceManager.getDefaultSharedPreferences(getActivity())
-                .getString(getString(R.string.pref_sorts_key), getString(R.string.pref_sorts_popular));
-
-        movieTask.execute(sort);
+        getActivity().getSupportLoaderManager().initLoader(POPULAR_MOVIES_LOADER_ID, null, this);
     }
 
     /**
@@ -158,65 +146,71 @@ public class MainFragment extends Fragment
         mErrorMessageDisplay.setVisibility(View.VISIBLE);
     }
 
-    private class FetchMovieTask extends AsyncTask<String, Void, ArrayList<Movie>> {
+    @Override
+    public Loader<ArrayList<Movie>> onCreateLoader(int id, final Bundle args) {
+        return new AsyncTaskLoader<ArrayList<Movie>>(getActivity()) {
 
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
+            ArrayList<Movie> mMoviesJson;
 
-            mLoadingIndicator.setVisibility(View.VISIBLE);
-        }
+            @Override
+            protected void onStartLoading() {
+                super.onStartLoading();
+                mLoadingIndicator.setVisibility(View.VISIBLE);
 
-        @Override
-        protected ArrayList<Movie> doInBackground(String... params) {
-
-            /* If there's no sort key, there's nothing to look up. */
-            if (params.length == 0) {
-
-                return null;
+                if (mMoviesJson != null) {
+                    deliverResult(mMoviesJson);
+                } else {
+                    forceLoad();
+                }
             }
 
-            String sort = params[0];
-            URL movieRequestUrl = NetworkUtils.buildUrl(sort);
+            @Override
+            public ArrayList<Movie> loadInBackground() {
+                String sort = PreferenceManager.getDefaultSharedPreferences(getActivity())
+                        .getString(getString(R.string.pref_sorts_key), getString(R.string.pref_sorts_popular));
 
-            try {
-                String jsonMovieResponse = NetworkUtils
-                        .getResponseFromHttpUrl(movieRequestUrl);
+                URL movieRequestUrl = NetworkUtils.buildUrl(sort);
 
-                return MovieDBJsonUtils
-                        .getMovieStringsFromJson(jsonMovieResponse);
+                try {
+                    String jsonMovieResponse = NetworkUtils
+                            .getResponseFromHttpUrl(movieRequestUrl);
 
-            } catch (Exception e) {
-                e.printStackTrace();
-                return null;
+                    return MovieDBJsonUtils
+                            .getMovieStringsFromJson(jsonMovieResponse);
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    return null;
+                }
             }
-        }
 
-        @Override
-        protected void onPostExecute(ArrayList<Movie> movieData) {
-            mLoadingIndicator.setVisibility(View.INVISIBLE);
-
-            if (movieData != null) {
-                showMovieDataView();
-                mMovieAdapter.setMovieData(movieData);
-            } else {
-                showErrorMessage();
+            /**
+             * Sends the result of the load to the registered listener.
+             *
+             * @param data The result of the load
+             */
+            public void deliverResult(ArrayList<Movie> data) {
+                mMoviesJson = data;
+                super.deliverResult(data);
             }
+        };
+    }
+
+    @Override
+    public void onLoadFinished(Loader<ArrayList<Movie>> loader, ArrayList<Movie> data) {
+        mLoadingIndicator.setVisibility(View.INVISIBLE);
+
+        if (data != null) {
+            showMovieDataView();
+            mMovieAdapter.setMovieData(data);
+        } else {
+            showErrorMessage();
         }
     }
 
     @Override
-    public void onSaveInstanceState(Bundle savedInstanceState) {
-        super.onSaveInstanceState(savedInstanceState);
+    public void onLoaderReset(Loader<ArrayList<Movie>> loader) {
 
-        ArrayList<Movie> mMovies = mMovieAdapter.getMovies();
-        int scrollPosition = ((GridLayoutManager) mRecyclerView.getLayoutManager())
-                .findFirstCompletelyVisibleItemPosition();
-
-        if(mMovies != null){
-            savedInstanceState.putParcelableArrayList(STATE_LIST, mMovies);
-            savedInstanceState.putInt(STATE_POSITION, scrollPosition);
-        }
     }
 
     @Override
