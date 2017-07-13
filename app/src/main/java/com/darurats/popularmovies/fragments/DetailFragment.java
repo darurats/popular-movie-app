@@ -13,21 +13,29 @@ import com.darurats.popularmovies.R;
 import com.darurats.popularmovies.models.Movie;
 import com.squareup.picasso.Picasso;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
+
 public class DetailFragment extends Fragment {
 
     private Movie mMovie;
+
+    @BindView(R.id.tv_title) TextView mTitleTextView;
+    @BindView(R.id.iv_poster) ImageView mPosterImageView;
+    @BindView(R.id.iv_backdrop) ImageView mBackdropImageView;
+    @BindView(R.id.tv_overview) TextView mOverviewTextView;
+    @BindView(R.id.tv_rating) TextView mRating;
+    @BindView(R.id.tv_release_date) TextView mReleaseDate;
+
+    private Unbinder unBinder;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_detail, container, false);
 
-        TextView mTitleTextView = (TextView) rootView.findViewById(R.id.tv_title);
-        ImageView mPosterImageView = (ImageView) rootView.findViewById(R.id.iv_poster);
-        ImageView mBackdropImageView = (ImageView) rootView.findViewById(R.id.iv_backdrop);
-        TextView mOverviewTextView = (TextView) rootView.findViewById(R.id.tv_overview);
-        TextView mRating = (TextView) rootView.findViewById(R.id.tv_rating);
-        TextView mReleaseDate = (TextView) rootView.findViewById(R.id.tv_release_date);
+        unBinder = ButterKnife.bind(this, rootView);
 
         if (savedInstanceState == null) {
             //collect our intent
@@ -54,5 +62,11 @@ public class DetailFragment extends Fragment {
     public void onSaveInstanceState(Bundle savedInstanceState) {
         super.onSaveInstanceState(savedInstanceState);
         savedInstanceState.putParcelable(Intent.EXTRA_TEXT, mMovie);
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        unBinder.unbind();
     }
 }

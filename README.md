@@ -15,5 +15,6 @@ You must provide your own API key in order to build the app. When you get it, ju
 ## Libraries
 
 * [Picasso](http://github.com/square/picasso)
+* [ButterKnife](https://github.com/JakeWharton/butterknife)
 
 Readme is inspired by another project [Udacity popular movies](https://github.com/vycius/udacity-popular-movies) check it out!

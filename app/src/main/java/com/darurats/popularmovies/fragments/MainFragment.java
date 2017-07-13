@@ -26,6 +26,10 @@ import com.darurats.popularmovies.utils.NetworkUtils;
 import java.net.URL;
 import java.util.ArrayList;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
+
 /**
  * Demonstrates the use of {@link RecyclerView} with a {@link LinearLayoutManager} and a
  * {@link GridLayoutManager}.
@@ -35,11 +39,13 @@ public class MainFragment extends Fragment
 
     private static final int POPULAR_MOVIES_LOADER_ID = 1;
 
-    private RecyclerView mRecyclerView;
     private MovieAdapter mMovieAdapter;
 
-    private TextView mErrorMessageDisplay;
-    private ProgressBar mLoadingIndicator;
+    @BindView(R.id.rv_movies) RecyclerView mRecyclerView;
+    @BindView(R.id.tv_error_message_display) TextView mErrorMessageDisplay;
+    @BindView(R.id.pb_loading_indicator) ProgressBar mLoadingIndicator;
+
+    private Unbinder unBinder;
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
@@ -53,14 +59,7 @@ public class MainFragment extends Fragment
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
-         /*
-         * Using findViewById, we get a reference to our RecyclerView from xml. This allows us to
-         * do things like set the adapter of the RecyclerView and toggle the visibility.
-         */
-        mRecyclerView = (RecyclerView) rootView.findViewById(R.id.rv_movies);
-
-        /* This TextView is used to display errors and will be hidden if there are no errors */
-        mErrorMessageDisplay = (TextView) rootView.findViewById(R.id.tv_error_message_display);
+        unBinder = ButterKnife.bind(this, rootView);
 
         int spanCount = getContext().getResources().getInteger(R.integer.grid_span_count);
 
@@ -82,15 +81,6 @@ public class MainFragment extends Fragment
 
         // Set CustomMovieAdapter as the adapter for RecyclerView.
         mRecyclerView.setAdapter(mMovieAdapter);
-
-         /*
-         * The ProgressBar that will indicate to the user that we are loading data. It will be
-         * hidden when no data is loading.
-         *
-         * Please note: This so called "ProgressBar" isn't a bar by default. It is more of a
-         * circle. We didn't make the rules (or the names of Views), we just follow them.
-         */
-        mLoadingIndicator = (ProgressBar) rootView.findViewById(R.id.pb_loading_indicator);
 
         return rootView;
     }
@@ -222,5 +212,11 @@ public class MainFragment extends Fragment
                 loadMovieData();
                 break;
         }
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        unBinder.unbind();
     }
 }
