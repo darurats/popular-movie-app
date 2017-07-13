@@ -18,6 +18,8 @@ package com.darurats.popularmovies.utils;
 import android.net.Uri;
 import android.util.Log;
 
+import com.darurats.popularmovies.BuildConfig;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -37,7 +39,7 @@ public final class NetworkUtils {
 
     private static final String MOVIE_BASE_URL = STATIC_MOVIE_URL;
 
-    private static final String API_KEY = "YOUR_API_KEY";
+    private static final String API_KEY = BuildConfig.THE_MOVIE_DATABASE_API_KEY;
 
     private static final String API_KEY_PARAM = "api_key";
 
