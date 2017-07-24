@@ -1,33 +1,62 @@
 package com.darurats.popularmovies;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.preference.PreferenceManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.darurats.popularmovies.fragments.DetailFragment;
 import com.darurats.popularmovies.fragments.MainFragment;
+import com.darurats.popularmovies.models.Movie;
 
-public class MainActivity extends AppCompatActivity {
+import butterknife.BindView;
+
+public class MainActivity extends AppCompatActivity
+        implements MainFragment.OnMovieSelectedListener{
 
     private static final int RESULT_SETTINGS = 100;
+
+    private boolean mTwoPane;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_movie);
+        setContentView(R.layout.activity_main);
 
-        if (savedInstanceState == null) {
-            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-            MainFragment fragment = new MainFragment();
-            transaction.replace(R.id.fragment_container, fragment);
-            transaction.commit();
+        if(findViewById(R.id.movies_linear_layout) != null){
+            mTwoPane = true;
+
+            if (savedInstanceState == null) {
+                FragmentManager fragmentManager = getSupportFragmentManager();
+
+                MainFragment mainFragment = new MainFragment();
+                fragmentManager.beginTransaction()
+                        .add(R.id.main_container, mainFragment)
+                        .commit();
+
+                DetailFragment detailFragment = new DetailFragment();
+                fragmentManager.beginTransaction()
+                        .add(R.id.detail_container, detailFragment)
+                        .commit();
+            }
+        }else{
+            mTwoPane = false;
+
+            if (savedInstanceState == null) {
+                FragmentManager fragmentManager = getSupportFragmentManager();
+
+                MainFragment mainFragment = new MainFragment();
+                fragmentManager.beginTransaction()
+                        .add(R.id.main_container, mainFragment)
+                        .commit();
+            }
         }
     }
 
@@ -52,5 +81,33 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        super.onActivityResult(requestCode, resultCode, intent);
+        Fragment fragment =  getSupportFragmentManager().findFragmentById(R.id.main_container);
+        if (fragment != null) {
+            fragment.onActivityResult(requestCode, resultCode, intent);
+        }
+    }
+
+    @Override
+    public void onMovieSelected(Movie movie) {
+        if(!mTwoPane){
+            Intent intent = new Intent(this, DetailActivity.class);
+            intent.putExtra("movie", movie);
+            startActivity(intent);
+        }else{
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            DetailFragment detailFragment = new DetailFragment();
+            Bundle args = new Bundle();
+            args.putParcelable("movie", movie);
+            detailFragment.setArguments(args);
+            fragmentManager.beginTransaction()
+                    .replace(R.id.detail_container, detailFragment)
+                    .addToBackStack(null)
+                    .commit();
+        }
     }
 }

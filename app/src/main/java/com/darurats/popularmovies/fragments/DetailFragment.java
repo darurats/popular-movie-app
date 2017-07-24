@@ -1,6 +1,5 @@
 package com.darurats.popularmovies.fragments;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -21,12 +20,18 @@ public class DetailFragment extends Fragment {
 
     private Movie mMovie;
 
-    @BindView(R.id.tv_title) TextView mTitleTextView;
-    @BindView(R.id.iv_poster) ImageView mPosterImageView;
-    @BindView(R.id.iv_backdrop) ImageView mBackdropImageView;
-    @BindView(R.id.tv_overview) TextView mOverviewTextView;
-    @BindView(R.id.tv_rating) TextView mRating;
-    @BindView(R.id.tv_release_date) TextView mReleaseDate;
+    @BindView(R.id.tv_title)
+    TextView mTitleTextView;
+    @BindView(R.id.iv_poster)
+    ImageView mPosterImageView;
+    @BindView(R.id.iv_backdrop)
+    ImageView mBackdropImageView;
+    @BindView(R.id.tv_overview)
+    TextView mOverviewTextView;
+    @BindView(R.id.tv_rating)
+    TextView mRating;
+    @BindView(R.id.tv_release_date)
+    TextView mReleaseDate;
 
     private Unbinder unBinder;
 
@@ -38,14 +43,16 @@ public class DetailFragment extends Fragment {
         unBinder = ButterKnife.bind(this, rootView);
 
         if (savedInstanceState == null) {
-            //collect our intent
-            Bundle data = getActivity().getIntent().getExtras();
-            mMovie = data.getParcelable(Intent.EXTRA_TEXT);
-        }else{
-            mMovie = savedInstanceState.getParcelable(Intent.EXTRA_TEXT);
+            Bundle data = this.getArguments();
+
+            if (data != null) {
+                mMovie = data.getParcelable("movie");
+            }
+        } else {
+            mMovie = savedInstanceState.getParcelable("movie");
         }
 
-        if(mMovie != null) {
+        if (mMovie != null) {
             mTitleTextView.setText(mMovie.getTitle());
             mOverviewTextView.setText(mMovie.getOverview());
             mRating.setText(mMovie.getRating());
@@ -61,7 +68,7 @@ public class DetailFragment extends Fragment {
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
         super.onSaveInstanceState(savedInstanceState);
-        savedInstanceState.putParcelable(Intent.EXTRA_TEXT, mMovie);
+        savedInstanceState.putParcelable("movie", mMovie);
     }
 
     @Override

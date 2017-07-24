@@ -11,14 +11,14 @@ public class SettingsActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        this.setContentView(R.layout.activity_movie);
+        this.setContentView(R.layout.activity_main);
 
         this.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         if (savedInstanceState == null) {
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             SettingsFragment fragment = new SettingsFragment();
-            transaction.replace(R.id.fragment_container, fragment);
+            transaction.replace(R.id.main_container, fragment);
             transaction.commit();
         }
     }

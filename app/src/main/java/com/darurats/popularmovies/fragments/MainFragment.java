@@ -1,5 +1,8 @@
 package com.darurats.popularmovies.fragments;
 
+import android.app.Activity;
+import android.content.Context;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.content.Loader;
@@ -35,7 +38,7 @@ import butterknife.Unbinder;
  * {@link GridLayoutManager}.
  */
 public class MainFragment extends Fragment
-        implements MovieAdapter.MovieAdapterOnClickHandler, LoaderManager.LoaderCallbacks<ArrayList<Movie>>{
+        implements MovieAdapter.MovieAdapterOnClickHandler, LoaderManager.LoaderCallbacks<ArrayList<Movie>> {
 
     private static final int POPULAR_MOVIES_LOADER_ID = 1;
 
@@ -46,6 +49,33 @@ public class MainFragment extends Fragment
     @BindView(R.id.pb_loading_indicator) ProgressBar mLoadingIndicator;
 
     private Unbinder unBinder;
+
+    OnMovieSelectedListener mCallback;
+
+    Activity activity;
+    // Container Activity must implement this interface
+    public interface OnMovieSelectedListener {
+        public void onMovieSelected(Movie movie);
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+
+        if (context instanceof Activity){
+            activity=(Activity) context;
+        }
+
+        // This makes sure that the container activity has implemented
+        // the callback interface. If not, it throws an exception
+        try {
+
+            mCallback = (OnMovieSelectedListener) activity;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(activity.toString()
+                    + " must implement OnMovieSelectedListener");
+        }
+    }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
@@ -103,9 +133,7 @@ public class MainFragment extends Fragment
      */
     @Override
     public void onClick(Movie movie) {
-        Intent intent = new Intent(getActivity(), DetailActivity.class);
-        intent.putExtra(Intent.EXTRA_TEXT, movie);
-        startActivity(intent);
+        mCallback.onMovieSelected(movie);
     }
 
     /**

@@ -1,6 +1,5 @@
 package com.darurats.popularmovies;
 
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
@@ -11,13 +10,18 @@ public class DetailActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_movie);
+        setContentView(R.layout.fragment_detail);
 
         if (savedInstanceState == null) {
-            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+
+            Bundle arguments = new Bundle();
+            arguments.putParcelable("movie", getIntent().getExtras().getParcelable("movie"));
             DetailFragment fragment = new DetailFragment();
-            transaction.replace(R.id.fragment_container, fragment);
-            transaction.commit();
+            fragment.setArguments(arguments);
+
+            getSupportFragmentManager().beginTransaction()
+                    .add(R.id.detail_container, fragment)
+                    .commit();
         }
     }
 }
