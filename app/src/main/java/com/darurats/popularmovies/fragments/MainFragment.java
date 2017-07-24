@@ -35,7 +35,7 @@ import butterknife.Unbinder;
  * {@link GridLayoutManager}.
  */
 public class MainFragment extends Fragment
-        implements MovieAdapter.MovieAdapterOnClickHandler, LoaderManager.LoaderCallbacks<ArrayList<Movie>> {
+        implements MovieAdapter.MovieAdapterOnClickHandler, LoaderManager.LoaderCallbacks<ArrayList<Movie>>{
 
     private static final int POPULAR_MOVIES_LOADER_ID = 1;
 
@@ -201,17 +201,6 @@ public class MainFragment extends Fragment
     @Override
     public void onLoaderReset(Loader<ArrayList<Movie>> loader) {
 
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        switch (requestCode) {
-            case 100:
-                loadMovieData();
-                break;
-        }
     }
 
     @Override

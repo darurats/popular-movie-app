@@ -1,13 +1,16 @@
 package com.darurats.popularmovies;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.preference.PreferenceManager;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.darurats.popularmovies.fragments.MainFragment;
 
@@ -50,14 +53,4 @@ public class MainActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent intent) {
-        super.onActivityResult(requestCode, resultCode, intent);
-        Fragment fragment =  getSupportFragmentManager().findFragmentById(R.id.fragment_container);
-        if (fragment != null) {
-            fragment.onActivityResult(requestCode, resultCode, intent);
-        }
-    }
-
 }
