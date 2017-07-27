@@ -35,6 +35,10 @@ public class Movie implements Parcelable {
         this.rating = rating;
     }
 
+    public String getId(){
+        return id;
+    }
+
     public String getTitle(){
         return title;
     }
@@ -57,6 +61,21 @@ public class Movie implements Parcelable {
 
     public String getRating(){
         return rating;
+    }
+
+    public static final class Response {
+
+        @Expose
+        public int page;
+
+        @Expose @SerializedName("total_pages")
+        public int totalPages;
+
+        @Expose @SerializedName("total_results")
+        public int totalMovies;
+
+        @Expose @SerializedName("results")
+        public ArrayList<Movie> movies = new ArrayList<>();
     }
 
     private Movie(Parcel in){

@@ -1,6 +1,8 @@
 package com.darurats.popularmovies.utils;
 
 import com.darurats.popularmovies.models.Movie;
+import com.darurats.popularmovies.models.Review;
+import com.darurats.popularmovies.models.Trailer;
 
 import java.util.ArrayList;
 
@@ -15,6 +17,12 @@ public interface MovieAPI {
 
     @GET("/3/movie/{sort}")
     Call<Movies> loadMovies(@Path("sort") String sort, @Query("api_key") String api_key);
+
+    @GET("3/movie/{id}/reviews?")
+    Call<Reviews> loadReviews(@Path("id") String id, @Query("api_key") String api_key);
+
+    @GET("3/movie/{id}/videos?")
+    Call<Trailers> loadTrailers(@Path("id") String id, @Query("api_key") String api_key);
 
     class MovieClient
     {
@@ -39,5 +47,13 @@ public interface MovieAPI {
 
     class Movies {
         public ArrayList<Movie> results;
+    }
+
+    class Reviews {
+        public ArrayList<Review> results;
+    }
+
+    class Trailers {
+        public ArrayList<Trailer> results;
     }
 }
