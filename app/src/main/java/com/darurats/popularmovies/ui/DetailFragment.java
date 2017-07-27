@@ -1,4 +1,4 @@
-package com.darurats.popularmovies.fragments;
+package com.darurats.popularmovies.ui;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;

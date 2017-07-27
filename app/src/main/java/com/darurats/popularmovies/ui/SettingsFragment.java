@@ -1,4 +1,4 @@
-package com.darurats.popularmovies.fragments;
+package com.darurats.popularmovies.ui;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;

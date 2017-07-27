@@ -1,22 +1,16 @@
-package com.darurats.popularmovies;
+package com.darurats.popularmovies.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.widget.Toast;
 
-import com.darurats.popularmovies.fragments.DetailFragment;
-import com.darurats.popularmovies.fragments.MainFragment;
+import com.darurats.popularmovies.R;
 import com.darurats.popularmovies.models.Movie;
-
-import butterknife.BindView;
 
 public class MainActivity extends AppCompatActivity
         implements MainFragment.OnMovieSelectedListener{

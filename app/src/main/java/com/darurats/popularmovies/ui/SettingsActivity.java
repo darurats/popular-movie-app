@@ -1,10 +1,10 @@
-package com.darurats.popularmovies;
+package com.darurats.popularmovies.ui;
 
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 
-import com.darurats.popularmovies.fragments.SettingsFragment;
+import com.darurats.popularmovies.R;
 
 public class SettingsActivity extends AppCompatActivity {
 

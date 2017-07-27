@@ -1,12 +1,10 @@
-package com.darurats.popularmovies.fragments;
+package com.darurats.popularmovies.ui;
 
 import android.app.Activity;
 import android.content.Context;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.content.Loader;
-import android.content.Intent;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
@@ -19,19 +17,20 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.darurats.popularmovies.DetailActivity;
+import com.darurats.popularmovies.App;
 import com.darurats.popularmovies.R;
 import com.darurats.popularmovies.adapters.MovieAdapter;
 import com.darurats.popularmovies.models.Movie;
-import com.darurats.popularmovies.utils.MovieDBJsonUtils;
-import com.darurats.popularmovies.utils.NetworkUtils;
+import com.darurats.popularmovies.utils.MovieAPI;
 
-import java.net.URL;
+import java.io.IOException;
 import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import retrofit2.Call;
+import retrofit2.Response;
 
 /**
  * Demonstrates the use of {@link RecyclerView} with a {@link LinearLayoutManager} and a
@@ -44,15 +43,19 @@ public class MainFragment extends Fragment
 
     private MovieAdapter mMovieAdapter;
 
-    @BindView(R.id.rv_movies) RecyclerView mRecyclerView;
-    @BindView(R.id.tv_error_message_display) TextView mErrorMessageDisplay;
-    @BindView(R.id.pb_loading_indicator) ProgressBar mLoadingIndicator;
+    @BindView(R.id.rv_movies)
+    RecyclerView mRecyclerView;
+    @BindView(R.id.tv_error_message_display)
+    TextView mErrorMessageDisplay;
+    @BindView(R.id.pb_loading_indicator)
+    ProgressBar mLoadingIndicator;
 
     private Unbinder unBinder;
 
     OnMovieSelectedListener mCallback;
 
     Activity activity;
+
     // Container Activity must implement this interface
     public interface OnMovieSelectedListener {
         public void onMovieSelected(Movie movie);
@@ -62,8 +65,8 @@ public class MainFragment extends Fragment
     public void onAttach(Context context) {
         super.onAttach(context);
 
-        if (context instanceof Activity){
-            activity=(Activity) context;
+        if (context instanceof Activity) {
+            activity = (Activity) context;
         }
 
         // This makes sure that the container activity has implemented
@@ -187,16 +190,12 @@ public class MainFragment extends Fragment
                 String sort = PreferenceManager.getDefaultSharedPreferences(getActivity())
                         .getString(getString(R.string.pref_sorts_key), getString(R.string.pref_sorts_popular));
 
-                URL movieRequestUrl = NetworkUtils.buildUrl(sort);
+                Call<MovieAPI.Movies> call = App.getMovieClient().getMovieAPI().loadMovies(sort, "ce4303a68e9aed6532239f50db805da8");
 
                 try {
-                    String jsonMovieResponse = NetworkUtils
-                            .getResponseFromHttpUrl(movieRequestUrl);
-
-                    return MovieDBJsonUtils
-                            .getMovieStringsFromJson(jsonMovieResponse);
-
-                } catch (Exception e) {
+                    Response<MovieAPI.Movies> response = call.execute();
+                    return response.body().results;
+                } catch (IOException e ){
                     e.printStackTrace();
                     return null;
                 }

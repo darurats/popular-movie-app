@@ -1,9 +1,9 @@
-package com.darurats.popularmovies;
+package com.darurats.popularmovies.ui;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
-import com.darurats.popularmovies.fragments.DetailFragment;
+import com.darurats.popularmovies.R;
 
 public class DetailActivity extends AppCompatActivity {
 
@@ -24,4 +24,6 @@ public class DetailActivity extends AppCompatActivity {
                     .commit();
         }
     }
+
+
 }

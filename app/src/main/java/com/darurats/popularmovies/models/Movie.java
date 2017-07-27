@@ -3,12 +3,25 @@ package com.darurats.popularmovies.models;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
+import java.util.ArrayList;
+
 public class Movie implements Parcelable {
+
+    @Expose
     private final String id;
     private String title = "";
+
+    @Expose @SerializedName("poster_path")
     private String posterPath = "";
     private String overview = "";
+
+    @Expose @SerializedName("release_date")
     private String releaseDate = "";
+
+    @Expose @SerializedName("backdrop_path")
     private String backdropPath = "";
     private String rating = "";
 
@@ -27,7 +40,7 @@ public class Movie implements Parcelable {
     }
 
     public String getPosterPath(){
-        return posterPath;
+        return "http://image.tmdb.org/t/p/w185/" + posterPath;
     }
 
     public String getOverview(){
