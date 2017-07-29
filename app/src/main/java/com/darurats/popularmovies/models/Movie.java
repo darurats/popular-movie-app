@@ -23,6 +23,8 @@ public class Movie implements Parcelable {
 
     @Expose @SerializedName("backdrop_path")
     private String backdropPath = "";
+
+    @Expose @SerializedName("vote_average")
     private String rating = "";
 
     public Movie(String id, String title, String posterPath, String overview, String releaseDate, String backdropPath, String rating) {

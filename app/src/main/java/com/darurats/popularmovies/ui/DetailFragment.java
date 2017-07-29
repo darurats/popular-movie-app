@@ -1,19 +1,23 @@
 package com.darurats.popularmovies.ui;
 
+import android.content.ContentValues;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.darurats.popularmovies.R;
 import com.darurats.popularmovies.adapters.SectionsPagerAdapter;
+import com.darurats.popularmovies.data.MovieContract;
 import com.darurats.popularmovies.models.Movie;
 import com.squareup.picasso.Picasso;
 
@@ -46,6 +50,8 @@ public class DetailFragment extends Fragment {
     TextView mRating;
     @BindView(R.id.tv_release_date)
     TextView mReleaseDate;
+    @BindView(R.id.btn_favorite)
+    Button mFavoriteButton;
     @BindView(R.id.container)
     ViewPager mViewPager;
     @BindView(R.id.tabs)
@@ -76,6 +82,27 @@ public class DetailFragment extends Fragment {
             Picasso.with(getActivity()).load(mMovie.getPosterPath()).into(mPosterImageView);
             Picasso.with(getActivity()).load(mMovie.getBackdropPath()).into(mBackdropImageView);
         }
+
+        mFavoriteButton.setOnClickListener(new Button.OnClickListener() {
+            public void onClick(View v) {
+                ContentValues contentValues = new ContentValues();
+
+                contentValues.put(MovieContract.MovieEntry.COLUMN_MOVIE_ID, mMovie.getId());
+                contentValues.put(MovieContract.MovieEntry.COLUMN_TITLE, mMovie.getTitle());
+                contentValues.put(MovieContract.MovieEntry.COLUMN_POSTER_PATH, mMovie.getPosterPath());
+                contentValues.put(MovieContract.MovieEntry.COLUMN_OVERVIEW, mMovie.getOverview());
+                contentValues.put(MovieContract.MovieEntry.COLUMN_BACKDROP_PATH, mMovie.getBackdropPath());
+                contentValues.put(MovieContract.MovieEntry.COLUMN_RELEASE_DATE, mMovie.getReleaseDate());
+                contentValues.put(MovieContract.MovieEntry.COLUMN_RATING, mMovie.getRating());
+
+                Uri uri = getActivity().getContentResolver().insert(MovieContract.MovieEntry.CONTENT_URI, contentValues);
+
+                // [Hint] Don't forget to call finish() to return to MainActivity after this insert is complete
+                if(uri != null) {
+                    Toast.makeText(getContext(), "Added to Favorites", Toast.LENGTH_LONG).show();
+                }
+            }
+        });
 
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
