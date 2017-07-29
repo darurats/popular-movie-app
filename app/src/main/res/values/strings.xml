@@ -9,6 +9,10 @@
     <string name="content_desc_poster">Popular Movies Poster</string>
     <string name="content_desc_backdrop">Popular Movies Backdrop</string>
 
+    <!-- Strings related to tabs -->
+    <string name="title_section1">Trailers</string>
+    <string name="title_section2">Reviews</string>
+
     <!-- String related to Units settings -->
     <string name="pref_sorts_label">Sort By</string>
     <string name="pref_sorts_label_popular">Popular</string>
@@ -16,4 +20,6 @@
     <string name="pref_sorts_key" translatable="false">sorts</string>
     <string name="pref_sorts_popular" translatable="false">popular</string>
     <string name="pref_sorts_top_rated" translatable="false">top_rated</string>
+
+    <string name="content_authority">com.darurats.popularmovies</string>
 </resources>

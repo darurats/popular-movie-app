@@ -2,19 +2,14 @@ package com.darurats.popularmovies.adapters;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.darurats.popularmovies.R;
-import com.darurats.popularmovies.models.Review;
-import com.darurats.popularmovies.ui.ReviewsFragment;
-import com.darurats.popularmovies.utils.NetworkUtils;
-import com.squareup.picasso.Picasso;
+import com.darurats.popularmovies.models.Trailer;
 
 import java.util.ArrayList;
 
@@ -22,44 +17,43 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
- * {@link ReviewAdapter} exposes a list of reviews to a
+ * {@link TrailerAdapter} exposes a list of trailers to a
  * {@link RecyclerView}
  */
-public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewAdapterViewHolder> {
+public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.TrailerAdapterViewHolder> {
 
-    private ArrayList<Review> mReviewData;
+    private ArrayList<Trailer> mTrailerData;
 
     /*
      * An on-click handler that we've defined to make it easy for an Activity to interface with
      * our RecyclerView
      */
-    private final ReviewAdapterOnClickHandler mClickHandler;
+    private final TrailerAdapterOnClickHandler mClickHandler;
 
     /**
      * The interface that receives onClick messages.
      */
-    public interface ReviewAdapterOnClickHandler {
-        void onClick(Review review);
+    public interface TrailerAdapterOnClickHandler {
+        void onClick(Trailer trailer);
     }
 
     /**
-     * Creates a ReviewAdapter.
+     * Creates a TrailerAdapter.
      *
      * @param clickHandler The on-click handler for this adapter. This single handler is called
      *                     when an item is clicked.
      */
-    public ReviewAdapter(ReviewAdapterOnClickHandler clickHandler) {
+    public TrailerAdapter(TrailerAdapterOnClickHandler clickHandler) {
         mClickHandler = clickHandler;
     }
 
     /**
-     * Cache of the children views for a review list item.
+     * Cache of the children views for a trailer list item.
      */
-    public class ReviewAdapterViewHolder extends RecyclerView.ViewHolder implements OnClickListener {
-        @BindView(R.id.tv_review_author) TextView mReviewAuthorTextView;
-        @BindView(R.id.tv_review_content) TextView mReviewContentTextView;
+    public class TrailerAdapterViewHolder extends RecyclerView.ViewHolder implements OnClickListener {
+        @BindView(R.id.tv_trailer_name) TextView mTrailerTextView;
 
-        public ReviewAdapterViewHolder(View view) {
+        public TrailerAdapterViewHolder(View view) {
             super(view);
             ButterKnife.bind(this, view);
             view.setOnClickListener(this);
@@ -74,8 +68,8 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewAdap
         public void onClick(View v) {
             int adapterPosition = getAdapterPosition();
 
-            Review review = mReviewData.get(adapterPosition);
-            mClickHandler.onClick(review);
+            Trailer trailer = mTrailerData.get(adapterPosition);
+            mClickHandler.onClick(trailer);
         }
     }
 
@@ -88,59 +82,57 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewAdap
      *                  can use this viewType integer to provide a different layout. See
      *                  {@link RecyclerView.Adapter#getItemViewType(int)}
      *                  for more details.
-     * @return A new ReviewAdapterViewHolder that holds the View for each list item
+     * @return A new TrailerAdapterViewHolder that holds the View for each list item
      */
     @Override
-    public ReviewAdapterViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
+    public TrailerAdapterViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
         Context context = viewGroup.getContext();
-        int layoutIdForListItem = R.layout.review_list_item;
+        int layoutIdForListItem = R.layout.trailer_list_item;
         LayoutInflater inflater = LayoutInflater.from(context);
         boolean shouldAttachToParentImmediately = false;
 
         View view = inflater.inflate(layoutIdForListItem, viewGroup, shouldAttachToParentImmediately);
-        return new ReviewAdapterViewHolder(view);
+        return new TrailerAdapterViewHolder(view);
     }
 
     /**
      * OnBindViewHolder is called by the RecyclerView to display the data at the specified
-     * position. In this method, we update the contents of the ViewHolder to display the review
+     * position. In this method, we update the contents of the ViewHolder to display the trailer
      * details for this particular position, using the "position" argument that is conveniently
      * passed into us.
      *
-     * @param reviewAdapterViewHolder The ViewHolder which should be updated to represent the
+     * @param trailerAdapterViewHolder The ViewHolder which should be updated to represent the
      *                               contents of the item at the given position in the data set.
      * @param position               The position of the item within the adapter's data set.
      */
     @Override
-    public void onBindViewHolder(ReviewAdapterViewHolder reviewAdapterViewHolder, int position) {
-        Review mReview = mReviewData.get(position);
+    public void onBindViewHolder(TrailerAdapterViewHolder trailerAdapterViewHolder, int position) {
+        Trailer mTrailer = mTrailerData.get(position);
 
-        Log.v(getClass().getSimpleName(), "Testing " + mReview);
-        reviewAdapterViewHolder.mReviewAuthorTextView.setText(mReview.getAuthor());
-        reviewAdapterViewHolder.mReviewContentTextView.setText(mReview.getContent());
+        trailerAdapterViewHolder.mTrailerTextView.setText(mTrailer.getName());
     }
 
     /**
      * This method simply returns the number of items to display. It is used behind the scenes
      * to help layout our Views and for animations.
      *
-     * @return The number of items available in our review
+     * @return The number of items available in our trailer
      */
     @Override
     public int getItemCount() {
-        if (null == mReviewData) return 0;
-        return mReviewData.size();
+        if (null == mTrailerData) return 0;
+        return mTrailerData.size();
     }
 
     /**
-     * This method is used to set the review on a ReviewAdapter if we've already
+     * This method is used to set the trailer on a TrailerAdapter if we've already
      * created one. This is handy when we get new data from the web but don't want to create a
-     * new ReviewAdapter to display it.
+     * new TrailerAdapter to display it.
      *
-     * @param reviewData The new review data to be displayed.
+     * @param trailerData The new trailer data to be displayed.
      */
-    public void setReviewData(ArrayList<Review> reviewData) {
-        mReviewData = reviewData;
+    public void setTrailerData(ArrayList<Trailer> trailerData) {
+        mTrailerData = trailerData;
         notifyDataSetChanged();
     }
 }
