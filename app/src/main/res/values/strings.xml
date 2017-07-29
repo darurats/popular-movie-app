@@ -9,6 +9,10 @@
     <string name="content_desc_poster">Popular Movies Poster</string>
     <string name="content_desc_backdrop">Popular Movies Backdrop</string>
 
+    <!-- Strings related to tabs -->
+    <string name="title_section1">Trailers</string>
+    <string name="title_section2">Reviews</string>
+
     <!-- String related to Units settings -->
     <string name="pref_sorts_label">Sort By</string>
     <string name="pref_sorts_label_popular">Popular</string>
