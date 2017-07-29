@@ -1,12 +1,12 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
+    android:orientation="vertical"
     android:padding="10dp">
 
     <ImageView
-        android:layout_height="wrap_content"
-        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_width="wrap_content"
         android:layout_weight="1"
         android:contentDescription="@string/content_desc_poster"
         android:src="@drawable/ic_action_play_over_video" />
@@ -14,10 +14,14 @@
     <TextView
         android:id="@+id/tv_trailer_name"
         android:layout_height="match_parent"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_weight="2"
-        android:layout_gravity="center_vertical"
         android:textSize="12sp"
         android:textColor="@android:color/black" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@android:color/darker_gray" />
 
 </LinearLayout>

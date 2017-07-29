@@ -9,7 +9,7 @@ import com.darurats.popularmovies.utils.MovieConstants;
 
 public class DetailActivity extends AppCompatActivity {
 
-    private Movie mMovie;
+    Movie mMovie;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,8 +20,6 @@ public class DetailActivity extends AppCompatActivity {
         mMovie = getIntent().getExtras().getParcelable(MovieConstants.MOVIE_TAG);
         arguments.putParcelable(MovieConstants.MOVIE_TAG, mMovie);
 
-        setTitle(mMovie.getTitle());
-
         if (savedInstanceState == null) {
             DetailFragment fragment = new DetailFragment();
             fragment.setArguments(arguments);
@@ -29,6 +27,5 @@ public class DetailActivity extends AppCompatActivity {
                     .add(R.id.main_container, fragment)
                     .commit();
         }
-
     }
 }

@@ -8,6 +8,7 @@
 
     <string name="content_desc_poster">Popular Movies Poster</string>
     <string name="content_desc_backdrop">Popular Movies Backdrop</string>
+    <string name="content_desc_app">Popular Movies App</string>
 
     <!-- Strings related to tabs -->
     <string name="title_section1">Trailers</string>
@@ -26,6 +27,9 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="navigation_drawer_label_all_movies">All Movies</string>
     <string name="navigation_drawer_label_favorites">Favorites</string>
+
+    <!-- Strings related to static label -->
+    <string name="static_label_overview">Overview</string>
 
     <string name="content_authority">com.darurats.popularmovies</string>
 </resources>

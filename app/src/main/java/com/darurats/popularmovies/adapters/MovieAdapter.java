@@ -114,7 +114,9 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
 
         String posterPath = ImageUtils.buildImageUrl(mMovie.getPosterPath(), 185);
 
-        Picasso.with(context).load(posterPath).into(movieAdapterViewHolder.mMovieImageView);
+        Picasso.with(context).load(posterPath)
+                .placeholder(R.drawable.placeholder)
+                .into(movieAdapterViewHolder.mMovieImageView);
     }
 
     /**

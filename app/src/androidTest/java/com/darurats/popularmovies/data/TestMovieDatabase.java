@@ -64,15 +64,15 @@ public class TestMovieDatabase {
     private static final String packageName = "com.darurats.popularmovies";
     private static final String dataPackageName = packageName + ".data";
 
-    private Class movieEntryClass;
-    private Class movieDbHelperClass;
+    Class movieEntryClass;
+    Class movieDbHelperClass;
 
     private static final String movieContractName = ".MovieContract";
     private static final String movieEntryName = movieContractName + "$MovieEntry";
     private static final String movieDbHelperName = ".MovieDbHelper";
 
     private static final String databaseNameVariableName = "DATABASE_NAME";
-    private static String REFLECTED_DATABASE_NAME;
+    static String REFLECTED_DATABASE_NAME;
 
     private static final String databaseVersionVariableName = "DATABASE_VERSION";
     private static int REFLECTED_DATABASE_VERSION;
@@ -293,6 +293,8 @@ public class TestMovieDatabase {
         assertEquals(movieTableShouldBeEmpty,
                 expectedRecordCountAfterUpgrade,
                 shouldBeEmptyMovieCursor.getCount());
+
+        shouldBeEmptyMovieCursor.close();
 
         /* Test is over, close the cursor */
         database.close();

@@ -141,7 +141,9 @@ public class FavoriteAdapter extends RecyclerView.Adapter<FavoriteAdapter.Favori
 
         //Set values
         favoriteAdapterViewHolder.itemView.setTag(id);
-        Picasso.with(context).load(posterPath).into(favoriteAdapterViewHolder.mMovieImageView);
+        Picasso.with(context).load(posterPath)
+                .placeholder(R.drawable.placeholder)
+                .into(favoriteAdapterViewHolder.mMovieImageView);
     }
 
     /**

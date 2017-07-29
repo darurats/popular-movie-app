@@ -17,20 +17,20 @@ public final class ImageUtils {
     public static String buildImageUrl(String imagePath, int width) {
         String widthPath;
 
-        if (width <= 92)
+        if (width <= 92) {
             widthPath = "/w92";
-        else if (width <= 154)
+        } else if (width <= 154) {
             widthPath = "/w154";
-        else if (width <= 185)
+        } else if (width <= 185) {
             widthPath = "/w185";
-        else if (width <= 342)
+        } else if (width <= 342) {
             widthPath = "/w342";
-        else if (width <= 500)
+        } else if (width <= 500) {
             widthPath = "/w500";
-        else
+        } else {
             widthPath = "/w780";
+        }
 
-        //Timber.v("buildPosterUrl: widthPath=" + widthPath);
         return MovieConstants.API.IMAGE_BASE_URL + widthPath + imagePath;
     }
 }

@@ -44,8 +44,6 @@ public class MoviesFragment extends Fragment
 
     private MovieService movieService;
 
-    private boolean mTwoPane;
-
     private MovieAdapter mMovieAdapter;
 
     @BindView(R.id.rv_movies)
@@ -94,26 +92,6 @@ public class MoviesFragment extends Fragment
 
         movieService = MovieClient.createService(MovieService.class);
 
-        if(rootView.findViewById(R.id.movies_linear_layout) != null){
-            mTwoPane = true;
-
-            if (savedInstanceState == null) {
-                FragmentManager fragmentManager = getFragmentManager();
-
-                MoviesFragment moviesFragment = new MoviesFragment();
-                fragmentManager.beginTransaction()
-                        .add(R.id.main_container, moviesFragment)
-                        .commit();
-
-                DetailFragment detailFragment = new DetailFragment();
-                fragmentManager.beginTransaction()
-                        .add(R.id.detail_container, detailFragment)
-                        .commit();
-            }
-        }else{
-            mTwoPane = false;
-        }
-
         return rootView;
     }
 
@@ -135,21 +113,9 @@ public class MoviesFragment extends Fragment
      */
     @Override
     public void onClick(Movie movie) {
-        if(!mTwoPane){
-            Intent intent = new Intent(getActivity(), DetailActivity.class);
-            intent.putExtra(MovieConstants.MOVIE_TAG, movie);
-            startActivity(intent);
-        }else{
-            FragmentManager fragmentManager = getFragmentManager();
-            DetailFragment detailFragment = new DetailFragment();
-            Bundle args = new Bundle();
-            args.putParcelable(MovieConstants.MOVIE_TAG, movie);
-            detailFragment.setArguments(args);
-            fragmentManager.beginTransaction()
-                    .replace(R.id.detail_container, detailFragment)
-                    .addToBackStack(null)
-                    .commit();
-        }
+        Intent intent = new Intent(getActivity(), DetailActivity.class);
+        intent.putExtra(MovieConstants.MOVIE_TAG, movie);
+        startActivity(intent);
     }
 
     /**
@@ -209,7 +175,7 @@ public class MoviesFragment extends Fragment
                 try {
                     Response<Movie.Response> response = call.execute();
                     return response.body().movies;
-                } catch (IOException e ){
+                } catch (IOException e) {
                     e.printStackTrace();
                     return null;
                 }

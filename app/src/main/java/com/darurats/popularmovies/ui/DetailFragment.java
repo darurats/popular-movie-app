@@ -1,6 +1,7 @@
 package com.darurats.popularmovies.ui;
 
 import android.content.ContentValues;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
@@ -30,6 +31,7 @@ import butterknife.Unbinder;
 public class DetailFragment extends Fragment {
 
     private Movie mMovie;
+
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
      * fragments for each of the sections. We use a
@@ -38,14 +40,12 @@ public class DetailFragment extends Fragment {
      * may be best to switch to a
      * {@link android.support.v4.app.FragmentStatePagerAdapter}.
      */
-    private SectionsPagerAdapter mSectionsPagerAdapter;
+    SectionsPagerAdapter mSectionsPagerAdapter;
 
     @BindView(R.id.tv_title)
     TextView mTitleTextView;
     @BindView(R.id.iv_poster)
     ImageView mPosterImageView;
-    @BindView(R.id.iv_backdrop)
-    ImageView mBackdropImageView;
     @BindView(R.id.tv_overview)
     TextView mOverviewTextView;
     @BindView(R.id.tv_rating)
@@ -60,6 +60,8 @@ public class DetailFragment extends Fragment {
     TabLayout mTabLayout;
 
     private Unbinder unBinder;
+
+    private Boolean mFavorite;
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
@@ -81,26 +83,56 @@ public class DetailFragment extends Fragment {
             mRating.setText(mMovie.getRating());
             mReleaseDate.setText(mMovie.getReleaseDate());
 
-            Picasso.with(getActivity()).load(ImageUtils.buildImageUrl(mMovie.getPosterPath(), 185)).into(mPosterImageView);
-            Picasso.with(getActivity()).load(ImageUtils.buildImageUrl(mMovie.getBackdropPath(), 780)).into(mBackdropImageView);
+            Cursor mCursor = getActivity().getContentResolver().query(MovieContract.MovieEntry.CONTENT_URI,
+                    null,
+                    MovieContract.MovieEntry.COLUMN_MOVIE_ID + " =?",
+                    new String[]{mMovie.getId()},
+                    null);
+
+            if (mCursor.getCount() > 0) {
+                mFavorite = true;
+                mFavoriteButton.setBackground(getResources().getDrawable(R.drawable.fav_add));
+            } else {
+                mFavorite = false;
+                mFavoriteButton.setBackground(getResources().getDrawable(R.drawable.fav_remove));
+            }
+
+            mCursor.close();
+
+            Picasso.with(getActivity())
+                    .load(ImageUtils.buildImageUrl(mMovie.getPosterPath(), 185))
+                    .placeholder(R.drawable.placeholder)
+                    .into(mPosterImageView);
         }
 
         mFavoriteButton.setOnClickListener(new Button.OnClickListener() {
             public void onClick(View v) {
-                ContentValues contentValues = new ContentValues();
 
-                contentValues.put(MovieContract.MovieEntry.COLUMN_MOVIE_ID, mMovie.getId());
-                contentValues.put(MovieContract.MovieEntry.COLUMN_TITLE, mMovie.getTitle());
-                contentValues.put(MovieContract.MovieEntry.COLUMN_POSTER_PATH, mMovie.getPosterPath());
-                contentValues.put(MovieContract.MovieEntry.COLUMN_OVERVIEW, mMovie.getOverview());
-                contentValues.put(MovieContract.MovieEntry.COLUMN_BACKDROP_PATH, mMovie.getBackdropPath());
-                contentValues.put(MovieContract.MovieEntry.COLUMN_RELEASE_DATE, mMovie.getReleaseDate());
-                contentValues.put(MovieContract.MovieEntry.COLUMN_RATING, mMovie.getRating());
+                if (mFavorite) {
+                    int rowDeleted = getActivity().getContentResolver().delete(MovieContract.MovieEntry.CONTENT_URI,
+                            MovieContract.MovieEntry.COLUMN_MOVIE_ID + " =?",
+                            new String[]{mMovie.getId()}
+                    );
 
-                Uri uri = getActivity().getContentResolver().insert(MovieContract.MovieEntry.CONTENT_URI, contentValues);
+                    if (rowDeleted > 0) {
+                        mFavoriteButton.setBackground(getResources().getDrawable(R.drawable.fav_remove));
+                    }
+                } else {
+                    ContentValues contentValues = new ContentValues();
 
-                if(uri != null) {
-                    Toast.makeText(getContext(), "Added to Favorites", Toast.LENGTH_LONG).show();
+                    contentValues.put(MovieContract.MovieEntry.COLUMN_MOVIE_ID, mMovie.getId());
+                    contentValues.put(MovieContract.MovieEntry.COLUMN_TITLE, mMovie.getTitle());
+                    contentValues.put(MovieContract.MovieEntry.COLUMN_POSTER_PATH, mMovie.getPosterPath());
+                    contentValues.put(MovieContract.MovieEntry.COLUMN_OVERVIEW, mMovie.getOverview());
+                    contentValues.put(MovieContract.MovieEntry.COLUMN_BACKDROP_PATH, mMovie.getBackdropPath());
+                    contentValues.put(MovieContract.MovieEntry.COLUMN_RELEASE_DATE, mMovie.getReleaseDate());
+                    contentValues.put(MovieContract.MovieEntry.COLUMN_RATING, mMovie.getRating());
+
+                    Uri uri = getActivity().getContentResolver().insert(MovieContract.MovieEntry.CONTENT_URI, contentValues);
+
+                    if (uri != null) {
+                        mFavoriteButton.setBackground(getResources().getDrawable(R.drawable.fav_add));
+                    }
                 }
             }
         });

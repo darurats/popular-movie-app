@@ -209,16 +209,14 @@ class TestUtilities {
             throws NoSuchFieldException, IllegalAccessException {
         Field stringField = clazz.getDeclaredField(variableName);
         stringField.setAccessible(true);
-        String value = (String) stringField.get(null);
-        return value;
+        return (String) stringField.get(null);
     }
 
     static Integer getStaticIntegerField(Class clazz, String variableName)
             throws NoSuchFieldException, IllegalAccessException {
         Field intField = clazz.getDeclaredField(variableName);
         intField.setAccessible(true);
-        Integer value = (Integer) intField.get(null);
-        return value;
+        return (Integer) intField.get(null);
     }
 
     static String studentReadableClassNotFound(ClassNotFoundException e) {
@@ -226,10 +224,9 @@ class TestUtilities {
         int indexBeforeSimpleClassName = message.lastIndexOf('.');
         String simpleClassNameThatIsMissing = message.substring(indexBeforeSimpleClassName + 1);
         simpleClassNameThatIsMissing = simpleClassNameThatIsMissing.replaceAll("\\$", ".");
-        String fullClassNotFoundReadableMessage = "Couldn't find the class "
+        return "Couldn't find the class "
                 + simpleClassNameThatIsMissing
                 + ".\nPlease make sure you've created that class and followed the TODOs.";
-        return fullClassNotFoundReadableMessage;
     }
 
     static String studentReadableNoSuchField(NoSuchFieldException e) {
@@ -242,10 +239,9 @@ class TestUtilities {
         if (m.find()) {
             String missingFieldName = m.group(1);
             String classForField = m.group(2).replaceAll("\\$", ".");
-            String fieldNotFoundReadableMessage = "Couldn't find "
+            return "Couldn't find "
                     + missingFieldName + " in class " + classForField + "."
                     + "\nPlease make sure you've declared that field and followed the TODOs.";
-            return fieldNotFoundReadableMessage;
         } else {
             return e.getMessage();
         }

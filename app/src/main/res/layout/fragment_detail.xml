@@ -11,23 +11,18 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1">
+        android:layout_weight="1"
+        android:background="@color/colorPrimaryDark">
 
         <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:background="@color/colorPrimaryDark" >
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
-
-                <ImageView
-                    android:id="@+id/iv_backdrop"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:adjustViewBounds="true"
-                    android:contentDescription="@string/content_desc_backdrop" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -42,7 +37,7 @@
                         android:adjustViewBounds="true"
                         android:contentDescription="@string/content_desc_poster" />
 
-                    <LinearLayout
+                    <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="0dp"
@@ -55,25 +50,42 @@
                             android:id="@+id/tv_title"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:textColor="@android:color/white"
                             android:textSize="21sp" />
 
                         <TextView
                             android:id="@+id/tv_release_date"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content" />
+                            android:layout_height="wrap_content"
+                            android:padding="5dp"
+                            android:layout_below="@+id/tv_title"
+                            android:textColor="@android:color/white" />
 
                         <TextView
                             android:id="@+id/tv_rating"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content" />
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/tv_release_date"
+                            android:textColor="@android:color/white" />
 
                         <Button
                             android:id="@+id/btn_favorite"
-                            android:text="Test"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content" />
-                    </LinearLayout>
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/tv_rating"
+                            android:layout_alignParentRight="true" />
+                    </RelativeLayout>
                 </LinearLayout>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/static_label_overview"
+                    android:paddingBottom="5dp"
+                    android:paddingLeft="5dp"
+                    android:paddingRight="5dp"
+                    android:textColor="@color/colorAccent"
+                    android:textSize="16sp" />
 
                 <TextView
                     android:id="@+id/tv_overview"
@@ -81,7 +93,8 @@
                     android:layout_height="wrap_content"
                     android:paddingBottom="5dp"
                     android:paddingLeft="5dp"
-                    android:paddingRight="5dp" />
+                    android:paddingRight="5dp"
+                    android:textColor="@android:color/white" />
             </LinearLayout>
         </ScrollView>
     </LinearLayout>
@@ -91,10 +104,14 @@
         android:layout_height="0dp"
         android:layout_weight="1"
         android:orientation="vertical">
+
         <android.support.design.widget.TabLayout
             android:id="@+id/tabs"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            app:tabGravity="fill"
+            app:tabMaxWidth="0dp"
+            app:tabMode="fixed" />
 
         <android.support.v4.view.ViewPager
             android:id="@+id/container"
@@ -106,10 +123,10 @@
             android:id="@+id/rv_reviews"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingTop="3dp"
+            android:paddingBottom="3dp"
             android:paddingLeft="3dp"
             android:paddingRight="3dp"
-            android:paddingBottom="3dp"/>
+            android:paddingTop="3dp" />
 
     </LinearLayout>
 

@@ -16,7 +16,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.darurats.popularmovies.R;
 import com.darurats.popularmovies.adapters.FavoriteAdapter;
@@ -37,8 +36,6 @@ public class FavoritesFragment extends Fragment
 
     private static final int POPULAR_FAVORITES_LOADER_ID = 4;
 
-    private boolean mTwoPane;
-
     private FavoriteAdapter mFavoriteAdapter;
 
     @BindView(R.id.rv_movies)
@@ -53,26 +50,6 @@ public class FavoritesFragment extends Fragment
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
-        if(getActivity().findViewById(R.id.movies_linear_layout) != null){
-            mTwoPane = true;
-
-            if (savedInstanceState == null) {
-                FragmentManager fragmentManager = getFragmentManager();
-
-                FavoritesFragment moviesFragment = new FavoritesFragment();
-                fragmentManager.beginTransaction()
-                        .add(R.id.main_container, moviesFragment)
-                        .commit();
-
-                DetailFragment detailFragment = new DetailFragment();
-                fragmentManager.beginTransaction()
-                        .add(R.id.detail_container, detailFragment)
-                        .commit();
-            }
-        }else{
-            mTwoPane = false;
-        }
 
         loadFavoriteData();
     }
@@ -126,23 +103,9 @@ public class FavoritesFragment extends Fragment
      */
     @Override
     public void onClick(Movie movie) {
-        Toast.makeText(getContext(), "Testing", Toast.LENGTH_LONG).show();
-
-        if(!mTwoPane){
-            Intent intent = new Intent(getActivity(), DetailActivity.class);
-            intent.putExtra(MovieConstants.MOVIE_TAG, movie);
-            startActivity(intent);
-        }else{
-            FragmentManager fragmentManager = getFragmentManager();
-            DetailFragment detailFragment = new DetailFragment();
-            Bundle args = new Bundle();
-            args.putParcelable(MovieConstants.MOVIE_TAG, movie);
-            detailFragment.setArguments(args);
-            fragmentManager.beginTransaction()
-                    .replace(R.id.detail_container, detailFragment)
-                    .addToBackStack(null)
-                    .commit();
-        }
+        Intent intent = new Intent(getActivity(), DetailActivity.class);
+        intent.putExtra(MovieConstants.MOVIE_TAG, movie);
+        startActivity(intent);
     }
 
     /**
@@ -196,14 +159,14 @@ public class FavoritesFragment extends Fragment
 
             @Override
             public Cursor loadInBackground() {
-                try{
+                try {
                     return getActivity().getContentResolver().query(MovieContract.MovieEntry.CONTENT_URI,
                             null,
                             null,
                             null,
                             MovieContract.MovieEntry.COLUMN_MOVIE_ID);
 
-                }catch (Exception e){
+                } catch (Exception e) {
                     e.printStackTrace();
                     return null;
                 }
