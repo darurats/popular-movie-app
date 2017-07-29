@@ -1,7 +1,7 @@
 package com.darurats.popularmovies.ui;
 
-import android.app.Activity;
-import android.content.Context;
+import android.content.Intent;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.content.Loader;
@@ -17,11 +17,12 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.darurats.popularmovies.App;
 import com.darurats.popularmovies.R;
 import com.darurats.popularmovies.adapters.MovieAdapter;
 import com.darurats.popularmovies.models.Movie;
-import com.darurats.popularmovies.utils.MovieAPI;
+import com.darurats.popularmovies.services.MovieClient;
+import com.darurats.popularmovies.services.MovieService;
+import com.darurats.popularmovies.utils.MovieConstants;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -36,10 +37,14 @@ import retrofit2.Response;
  * Demonstrates the use of {@link RecyclerView} with a {@link LinearLayoutManager} and a
  * {@link GridLayoutManager}.
  */
-public class MainFragment extends Fragment
+public class MoviesFragment extends Fragment
         implements MovieAdapter.MovieAdapterOnClickHandler, LoaderManager.LoaderCallbacks<ArrayList<Movie>> {
 
     private static final int POPULAR_MOVIES_LOADER_ID = 1;
+
+    private MovieService movieService;
+
+    private boolean mTwoPane;
 
     private MovieAdapter mMovieAdapter;
 
@@ -51,34 +56,6 @@ public class MainFragment extends Fragment
     ProgressBar mLoadingIndicator;
 
     private Unbinder unBinder;
-
-    OnMovieSelectedListener mCallback;
-
-    Activity activity;
-
-    // Container Activity must implement this interface
-    public interface OnMovieSelectedListener {
-        public void onMovieSelected(Movie movie);
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-
-        if (context instanceof Activity) {
-            activity = (Activity) context;
-        }
-
-        // This makes sure that the container activity has implemented
-        // the callback interface. If not, it throws an exception
-        try {
-
-            mCallback = (OnMovieSelectedListener) activity;
-        } catch (ClassCastException e) {
-            throw new ClassCastException(activity.toString()
-                    + " must implement OnMovieSelectedListener");
-        }
-    }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
@@ -115,6 +92,28 @@ public class MainFragment extends Fragment
         // Set CustomMovieAdapter as the adapter for RecyclerView.
         mRecyclerView.setAdapter(mMovieAdapter);
 
+        movieService = MovieClient.createService(MovieService.class);
+
+        if(rootView.findViewById(R.id.movies_linear_layout) != null){
+            mTwoPane = true;
+
+            if (savedInstanceState == null) {
+                FragmentManager fragmentManager = getFragmentManager();
+
+                MoviesFragment moviesFragment = new MoviesFragment();
+                fragmentManager.beginTransaction()
+                        .add(R.id.main_container, moviesFragment)
+                        .commit();
+
+                DetailFragment detailFragment = new DetailFragment();
+                fragmentManager.beginTransaction()
+                        .add(R.id.detail_container, detailFragment)
+                        .commit();
+            }
+        }else{
+            mTwoPane = false;
+        }
+
         return rootView;
     }
 
@@ -125,7 +124,7 @@ public class MainFragment extends Fragment
     private void loadMovieData() {
         showMovieDataView();
 
-        getActivity().getSupportLoaderManager().initLoader(POPULAR_MOVIES_LOADER_ID, null, this);
+        getActivity().getSupportLoaderManager().restartLoader(POPULAR_MOVIES_LOADER_ID, null, this);
     }
 
     /**
@@ -136,7 +135,21 @@ public class MainFragment extends Fragment
      */
     @Override
     public void onClick(Movie movie) {
-        mCallback.onMovieSelected(movie);
+        if(!mTwoPane){
+            Intent intent = new Intent(getActivity(), DetailActivity.class);
+            intent.putExtra(MovieConstants.MOVIE_TAG, movie);
+            startActivity(intent);
+        }else{
+            FragmentManager fragmentManager = getFragmentManager();
+            DetailFragment detailFragment = new DetailFragment();
+            Bundle args = new Bundle();
+            args.putParcelable(MovieConstants.MOVIE_TAG, movie);
+            detailFragment.setArguments(args);
+            fragmentManager.beginTransaction()
+                    .replace(R.id.detail_container, detailFragment)
+                    .addToBackStack(null)
+                    .commit();
+        }
     }
 
     /**
@@ -187,14 +200,15 @@ public class MainFragment extends Fragment
 
             @Override
             public ArrayList<Movie> loadInBackground() {
+
                 String sort = PreferenceManager.getDefaultSharedPreferences(getActivity())
                         .getString(getString(R.string.pref_sorts_key), getString(R.string.pref_sorts_popular));
 
-                Call<MovieAPI.Movies> call = App.getMovieClient().getMovieAPI().loadMovies(sort, "ce4303a68e9aed6532239f50db805da8");
+                Call<Movie.Response> call = movieService.loadMovies(sort);
 
                 try {
-                    Response<MovieAPI.Movies> response = call.execute();
-                    return response.body().results;
+                    Response<Movie.Response> response = call.execute();
+                    return response.body().movies;
                 } catch (IOException e ){
                     e.printStackTrace();
                     return null;

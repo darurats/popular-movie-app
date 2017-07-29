@@ -2,19 +2,14 @@ package com.darurats.popularmovies.adapters;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.darurats.popularmovies.R;
 import com.darurats.popularmovies.models.Review;
-import com.darurats.popularmovies.ui.ReviewsFragment;
-import com.darurats.popularmovies.utils.NetworkUtils;
-import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
@@ -115,7 +110,6 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewAdap
     public void onBindViewHolder(ReviewAdapterViewHolder reviewAdapterViewHolder, int position) {
         Review mReview = mReviewData.get(position);
 
-        Log.v(getClass().getSimpleName(), "Testing " + mReview);
         reviewAdapterViewHolder.mReviewAuthorTextView.setText(mReview.getAuthor());
         reviewAdapterViewHolder.mReviewContentTextView.setText(mReview.getContent());
     }

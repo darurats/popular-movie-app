@@ -5,6 +5,7 @@ import android.os.Bundle;
 
 import com.darurats.popularmovies.R;
 import com.darurats.popularmovies.models.Movie;
+import com.darurats.popularmovies.utils.MovieConstants;
 
 public class DetailActivity extends AppCompatActivity {
 
@@ -13,11 +14,11 @@ public class DetailActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_movies);
 
         Bundle arguments = new Bundle();
-        mMovie = getIntent().getExtras().getParcelable("movie");
-        arguments.putParcelable("movie", mMovie);
+        mMovie = getIntent().getExtras().getParcelable(MovieConstants.MOVIE_TAG);
+        arguments.putParcelable(MovieConstants.MOVIE_TAG, mMovie);
 
         setTitle(mMovie.getTitle());
 

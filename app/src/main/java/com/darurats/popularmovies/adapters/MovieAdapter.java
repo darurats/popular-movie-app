@@ -10,6 +10,7 @@ import android.widget.ImageView;
 
 import com.darurats.popularmovies.R;
 import com.darurats.popularmovies.models.Movie;
+import com.darurats.popularmovies.utils.ImageUtils;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -111,7 +112,9 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
         Context context = movieAdapterViewHolder.mMovieImageView.getContext();
         Movie mMovie = mMovieData.get(position);
 
-        Picasso.with(context).load(mMovie.getPosterPath()).into(movieAdapterViewHolder.mMovieImageView);
+        String posterPath = ImageUtils.buildImageUrl(mMovie.getPosterPath(), 185);
+
+        Picasso.with(context).load(posterPath).into(movieAdapterViewHolder.mMovieImageView);
     }
 
     /**

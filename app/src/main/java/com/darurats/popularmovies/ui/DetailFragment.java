@@ -19,6 +19,8 @@ import com.darurats.popularmovies.R;
 import com.darurats.popularmovies.adapters.SectionsPagerAdapter;
 import com.darurats.popularmovies.data.MovieContract;
 import com.darurats.popularmovies.models.Movie;
+import com.darurats.popularmovies.utils.ImageUtils;
+import com.darurats.popularmovies.utils.MovieConstants;
 import com.squareup.picasso.Picasso;
 
 import butterknife.BindView;
@@ -67,10 +69,10 @@ public class DetailFragment extends Fragment {
             Bundle data = this.getArguments();
 
             if (data != null) {
-                mMovie = data.getParcelable("movie");
+                mMovie = data.getParcelable(MovieConstants.MOVIE_TAG);
             }
         } else {
-            mMovie = savedInstanceState.getParcelable("movie");
+            mMovie = savedInstanceState.getParcelable(MovieConstants.MOVIE_TAG);
         }
 
         if (mMovie != null) {
@@ -79,8 +81,8 @@ public class DetailFragment extends Fragment {
             mRating.setText(mMovie.getRating());
             mReleaseDate.setText(mMovie.getReleaseDate());
 
-            Picasso.with(getActivity()).load(mMovie.getPosterPath()).into(mPosterImageView);
-            Picasso.with(getActivity()).load(mMovie.getBackdropPath()).into(mBackdropImageView);
+            Picasso.with(getActivity()).load(ImageUtils.buildImageUrl(mMovie.getPosterPath(), 185)).into(mPosterImageView);
+            Picasso.with(getActivity()).load(ImageUtils.buildImageUrl(mMovie.getBackdropPath(), 780)).into(mBackdropImageView);
         }
 
         mFavoriteButton.setOnClickListener(new Button.OnClickListener() {
@@ -97,7 +99,6 @@ public class DetailFragment extends Fragment {
 
                 Uri uri = getActivity().getContentResolver().insert(MovieContract.MovieEntry.CONTENT_URI, contentValues);
 
-                // [Hint] Don't forget to call finish() to return to MainActivity after this insert is complete
                 if(uri != null) {
                     Toast.makeText(getContext(), "Added to Favorites", Toast.LENGTH_LONG).show();
                 }
@@ -127,7 +128,7 @@ public class DetailFragment extends Fragment {
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
         super.onSaveInstanceState(savedInstanceState);
-        savedInstanceState.putParcelable("movie", mMovie);
+        savedInstanceState.putParcelable(MovieConstants.MOVIE_TAG, mMovie);
     }
 
     @Override

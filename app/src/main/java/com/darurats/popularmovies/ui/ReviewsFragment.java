@@ -4,7 +4,6 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.content.Loader;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -13,13 +12,15 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
-import com.darurats.popularmovies.App;
 import com.darurats.popularmovies.R;
 import com.darurats.popularmovies.adapters.ReviewAdapter;
 import com.darurats.popularmovies.models.Movie;
 import com.darurats.popularmovies.models.Review;
-import com.darurats.popularmovies.utils.MovieAPI;
+import com.darurats.popularmovies.services.MovieClient;
+import com.darurats.popularmovies.services.MovieService;
+import com.darurats.popularmovies.utils.MovieConstants;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -39,6 +40,8 @@ public class ReviewsFragment extends Fragment
 
     private static final int POPULAR_REVIEWS_LOADER_ID = 2;
 
+    private MovieService movieService;
+
     private Movie mMovie;
 
     private ReviewAdapter mReviewAdapter;
@@ -56,10 +59,10 @@ public class ReviewsFragment extends Fragment
             Bundle data = this.getArguments();
 
             if (data != null) {
-                mMovie = data.getParcelable("movie");
+                mMovie = data.getParcelable(MovieConstants.MOVIE_TAG);
             }
         } else {
-            mMovie = savedInstanceState.getParcelable("movie");
+            mMovie = savedInstanceState.getParcelable(MovieConstants.MOVIE_TAG);
         }
 
         loadReviewData();
@@ -89,6 +92,8 @@ public class ReviewsFragment extends Fragment
 
         // Set CustomReviewAdapter as the adapter for RecyclerView.
         mRecyclerView.setAdapter(mReviewAdapter);
+
+        movieService = MovieClient.createService(MovieService.class);
 
         return rootView;
     }
@@ -146,12 +151,11 @@ public class ReviewsFragment extends Fragment
 
             @Override
             public ArrayList<Review> loadInBackground() {
-                Call<MovieAPI.Reviews> call = App.getMovieClient().getMovieAPI().loadReviews(mMovie.getId(), "ce4303a68e9aed6532239f50db805da8");
+                Call<Review.Response> call = movieService.loadReviews(mMovie.getId());
 
                 try {
-                    Response<MovieAPI.Reviews> response = call.execute();
-                    Log.v(getClass().getSimpleName(), "Testing " + response);
-                    return response.body().results;
+                    Response<Review.Response> response = call.execute();
+                    return response.body().reviews;
                 } catch (IOException e ){
                     e.printStackTrace();
                     return null;
@@ -174,7 +178,7 @@ public class ReviewsFragment extends Fragment
     public void onLoadFinished(Loader<ArrayList<Review>> loader, ArrayList<Review> data) {
         if (data != null) {
             showReviewDataView();
-            Log.v(getClass().getSimpleName(), "Testing " + data);
+
             mReviewAdapter.setReviewData(data);
         } else {
             showErrorMessage();

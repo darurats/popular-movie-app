@@ -10,6 +10,7 @@ import com.darurats.popularmovies.R;
 import com.darurats.popularmovies.models.Movie;
 import com.darurats.popularmovies.ui.ReviewsFragment;
 import com.darurats.popularmovies.ui.TrailersFragment;
+import com.darurats.popularmovies.utils.MovieConstants;
 
 import java.util.Locale;
 
@@ -18,8 +19,6 @@ import java.util.Locale;
  * one of the sections/tabs/pages.
  */
 public class SectionsPagerAdapter extends FragmentPagerAdapter {
-
-    private static final String TAG = SectionsPagerAdapter.class.getSimpleName();
 
     protected Movie mMovie;
     protected Context mContext;
@@ -34,7 +33,7 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
     public Fragment getItem(int position) {
 
         Bundle args = new Bundle();
-        args.putParcelable("movie", mMovie);
+        args.putParcelable(MovieConstants.MOVIE_TAG, mMovie);
 
         // getItem is called to instantiate the fragment for the given page.
         // Return a PlaceholderFragment (defined as a static inner class below).

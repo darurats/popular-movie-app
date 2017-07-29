@@ -14,7 +14,8 @@ You must provide your own API key in order to build the app. When you get it, ju
 
 ## Libraries
 
-* [Picasso](http://github.com/square/picasso)
-* [ButterKnife](https://github.com/JakeWharton/butterknife)
+* [Picasso](http://square.github.io/picasso/) - A powerful library that handles image loading and caching
+* [Retrofit](http://square.github.io/retrofit/) - A type-safe HTTP client for Android and Java
+* [Butterknife](http://jakewharton.github.io/butterknife/) - Field and method binding for Android views
 
 Readme is inspired by another project [Udacity popular movies](https://github.com/vycius/udacity-popular-movies) check it out!

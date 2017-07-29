@@ -15,12 +15,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.darurats.popularmovies.App;
 import com.darurats.popularmovies.R;
 import com.darurats.popularmovies.adapters.TrailerAdapter;
 import com.darurats.popularmovies.models.Movie;
 import com.darurats.popularmovies.models.Trailer;
-import com.darurats.popularmovies.utils.MovieAPI;
+import com.darurats.popularmovies.services.MovieClient;
+import com.darurats.popularmovies.services.MovieService;
+import com.darurats.popularmovies.utils.MovieConstants;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -42,6 +43,8 @@ public class TrailersFragment extends Fragment
 
     private static final String VIDEO_TYPE = "YouTube";
 
+    private MovieService movieService;
+
     private Movie mMovie;
 
     private TrailerAdapter mTrailerAdapter;
@@ -59,10 +62,10 @@ public class TrailersFragment extends Fragment
             Bundle data = this.getArguments();
 
             if (data != null) {
-                mMovie = data.getParcelable("movie");
+                mMovie = data.getParcelable(MovieConstants.MOVIE_TAG);
             }
         } else {
-            mMovie = savedInstanceState.getParcelable("movie");
+            mMovie = savedInstanceState.getParcelable(MovieConstants.MOVIE_TAG);
         }
 
         loadTrailerData();
@@ -92,6 +95,8 @@ public class TrailersFragment extends Fragment
 
         // Set CustomTrailerAdapter as the adapter for RecyclerView.
         mRecyclerView.setAdapter(mTrailerAdapter);
+
+        movieService = MovieClient.createService(MovieService.class);
 
         return rootView;
     }
@@ -149,11 +154,11 @@ public class TrailersFragment extends Fragment
 
             @Override
             public ArrayList<Trailer> loadInBackground() {
-                Call<MovieAPI.Trailers> call = App.getMovieClient().getMovieAPI().loadTrailers(mMovie.getId(), "ce4303a68e9aed6532239f50db805da8");
+                Call<Trailer.Response> call = movieService.loadTrailers(mMovie.getId());
 
                 try {
-                    Response<MovieAPI.Trailers> response = call.execute();
-                    return response.body().results;
+                    Response<Trailer.Response> response = call.execute();
+                    return response.body().trailers;
                 } catch (IOException e ){
                     e.printStackTrace();
                     return null;

@@ -2,106 +2,105 @@ package com.darurats.popularmovies.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.design.widget.NavigationView;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 
 import com.darurats.popularmovies.R;
-import com.darurats.popularmovies.models.Movie;
 
 public class MainActivity extends AppCompatActivity
-        implements MainFragment.OnMovieSelectedListener{
-
-    private static final int RESULT_SETTINGS = 100;
-
-    private boolean mTwoPane;
+        implements NavigationView.OnNavigationItemSelectedListener{
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
-        if(findViewById(R.id.movies_linear_layout) != null){
-            mTwoPane = true;
+        if(savedInstanceState == null){
+            FragmentManager fragmentManager = getSupportFragmentManager();
 
-            if (savedInstanceState == null) {
-                FragmentManager fragmentManager = getSupportFragmentManager();
+            MoviesFragment moviesFragment = new MoviesFragment();
+            fragmentManager.beginTransaction()
+                    .replace(R.id.main_container, moviesFragment)
+                    .commit();
+        }
 
-                MainFragment mainFragment = new MainFragment();
-                fragmentManager.beginTransaction()
-                        .add(R.id.main_container, mainFragment)
-                        .commit();
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.setDrawerListener(toggle);
+        toggle.syncState();
 
-                DetailFragment detailFragment = new DetailFragment();
-                fragmentManager.beginTransaction()
-                        .add(R.id.detail_container, detailFragment)
-                        .commit();
-            }
-        }else{
-            mTwoPane = false;
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+    }
 
-            if (savedInstanceState == null) {
-                FragmentManager fragmentManager = getSupportFragmentManager();
-
-                MainFragment mainFragment = new MainFragment();
-                fragmentManager.beginTransaction()
-                        .add(R.id.main_container, mainFragment)
-                        .commit();
-            }
+    @Override
+    public void onBackPressed() {
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
         }
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        /* Use AppCompatActivity's method getMenuInflater to get a handle on the menu inflater */
-        MenuInflater inflater = getMenuInflater();
-        /* Use the inflater's inflate method to inflate our menu layout to this menu */
-        inflater.inflate(R.menu.menu_main, menu);
-        /* Return true so that the menu is displayed in the Toolbar */
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
+        //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             Intent intent = new Intent(this, SettingsActivity.class);
-            startActivityForResult(intent, RESULT_SETTINGS);
+            startActivity(intent);
             return true;
         }
 
         return super.onOptionsItemSelected(item);
     }
 
+    @SuppressWarnings("StatementWithEmptyBody")
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent intent) {
-        super.onActivityResult(requestCode, resultCode, intent);
-        Fragment fragment =  getSupportFragmentManager().findFragmentById(R.id.main_container);
-        if (fragment != null) {
-            fragment.onActivityResult(requestCode, resultCode, intent);
-        }
-    }
+    public boolean onNavigationItemSelected(MenuItem item) {
+        // Handle navigation view item clicks here.
+        int id = item.getItemId();
 
-    @Override
-    public void onMovieSelected(Movie movie) {
-        if(!mTwoPane){
-            Intent intent = new Intent(this, DetailActivity.class);
-            intent.putExtra("movie", movie);
-            startActivity(intent);
-        }else{
+        if (id == R.id.nav_all_movies) {
             FragmentManager fragmentManager = getSupportFragmentManager();
-            DetailFragment detailFragment = new DetailFragment();
-            Bundle args = new Bundle();
-            args.putParcelable("movie", movie);
-            detailFragment.setArguments(args);
+
+            MoviesFragment moviesFragment = new MoviesFragment();
             fragmentManager.beginTransaction()
-                    .replace(R.id.detail_container, detailFragment)
-                    .addToBackStack(null)
+                    .replace(R.id.main_container, moviesFragment)
+                    .commit();
+        } else if (id == R.id.nav_favorites) {
+            FragmentManager fragmentManager = getSupportFragmentManager();
+
+            FavoritesFragment favoritesFragment = new FavoritesFragment();
+            fragmentManager.beginTransaction()
+                    .replace(R.id.main_container, favoritesFragment)
                     .commit();
         }
+
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer.closeDrawer(GravityCompat.START);
+        return true;
     }
 }
