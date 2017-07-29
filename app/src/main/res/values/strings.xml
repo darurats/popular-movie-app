@@ -20,4 +20,6 @@
     <string name="pref_sorts_key" translatable="false">sorts</string>
     <string name="pref_sorts_popular" translatable="false">popular</string>
     <string name="pref_sorts_top_rated" translatable="false">top_rated</string>
+
+    <string name="content_authority">com.darurats.popularmovies</string>
 </resources>
