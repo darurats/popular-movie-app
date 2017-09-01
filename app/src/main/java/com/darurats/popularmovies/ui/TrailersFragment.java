@@ -19,8 +19,8 @@ import com.darurats.popularmovies.R;
 import com.darurats.popularmovies.adapters.TrailerAdapter;
 import com.darurats.popularmovies.models.Movie;
 import com.darurats.popularmovies.models.Trailer;
-import com.darurats.popularmovies.services.MovieClient;
 import com.darurats.popularmovies.services.MovieService;
+import com.darurats.popularmovies.services.MovieClient;
 import com.darurats.popularmovies.utils.MovieConstants;
 
 import java.io.IOException;
@@ -43,7 +43,7 @@ public class TrailersFragment extends Fragment
 
     private static final String VIDEO_TYPE = "YouTube";
 
-    private MovieService movieService;
+    private MovieClient movieClient;
 
     private Movie mMovie;
 
@@ -96,7 +96,7 @@ public class TrailersFragment extends Fragment
         // Set CustomTrailerAdapter as the adapter for RecyclerView.
         mRecyclerView.setAdapter(mTrailerAdapter);
 
-        movieService = MovieClient.createService(MovieService.class);
+        movieClient = MovieService.createService(MovieClient.class);
 
         return rootView;
     }
@@ -154,7 +154,7 @@ public class TrailersFragment extends Fragment
 
             @Override
             public ArrayList<Trailer> loadInBackground() {
-                Call<Trailer.Response> call = movieService.loadTrailers(mMovie.getId());
+                Call<Trailer.Response> call = movieClient.loadTrailers(mMovie.getId());
 
                 try {
                     Response<Trailer.Response> response = call.execute();

@@ -1,7 +1,6 @@
 package com.darurats.popularmovies.ui;
 
 import android.content.Intent;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.content.Loader;
@@ -20,8 +19,8 @@ import android.widget.TextView;
 import com.darurats.popularmovies.R;
 import com.darurats.popularmovies.adapters.MovieAdapter;
 import com.darurats.popularmovies.models.Movie;
-import com.darurats.popularmovies.services.MovieClient;
 import com.darurats.popularmovies.services.MovieService;
+import com.darurats.popularmovies.services.MovieClient;
 import com.darurats.popularmovies.utils.MovieConstants;
 
 import java.io.IOException;
@@ -42,7 +41,7 @@ public class MoviesFragment extends Fragment
 
     private static final int POPULAR_MOVIES_LOADER_ID = 1;
 
-    private MovieService movieService;
+    private MovieClient movieClient;
 
     private MovieAdapter mMovieAdapter;
 
@@ -90,7 +89,7 @@ public class MoviesFragment extends Fragment
         // Set CustomMovieAdapter as the adapter for RecyclerView.
         mRecyclerView.setAdapter(mMovieAdapter);
 
-        movieService = MovieClient.createService(MovieService.class);
+        movieClient = MovieService.createService(MovieClient.class);
 
         return rootView;
     }
@@ -170,7 +169,7 @@ public class MoviesFragment extends Fragment
                 String sort = PreferenceManager.getDefaultSharedPreferences(getActivity())
                         .getString(getString(R.string.pref_sorts_key), getString(R.string.pref_sorts_popular));
 
-                Call<Movie.Response> call = movieService.loadMovies(sort);
+                Call<Movie.Response> call = movieClient.loadMovies(sort);
 
                 try {
                     Response<Movie.Response> response = call.execute();

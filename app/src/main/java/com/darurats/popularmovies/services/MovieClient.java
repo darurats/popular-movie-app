@@ -1,40 +1,21 @@
 package com.darurats.popularmovies.services;
 
-import com.darurats.popularmovies.BuildConfig;
-import com.darurats.popularmovies.utils.MovieConstants;
+import com.darurats.popularmovies.models.Movie;
+import com.darurats.popularmovies.models.Review;
+import com.darurats.popularmovies.models.Trailer;
 
-import java.io.IOException;
+import retrofit2.Call;
+import retrofit2.http.GET;
+import retrofit2.http.Path;
 
-import okhttp3.HttpUrl;
-import okhttp3.Interceptor;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
-import retrofit2.converter.gson.GsonConverterFactory;
-import retrofit2.Retrofit;
+public interface MovieClient {
 
-public class MovieClient {
+    @GET("/3/movie/{sort}")
+    Call<Movie.Response> loadMovies(@Path("sort") String sort);
 
-    private static Retrofit.Builder builder = new Retrofit.Builder()
-            .baseUrl(MovieConstants.API.BASE_URL)
-            .addConverterFactory(GsonConverterFactory.create());
+    @GET("3/movie/{id}/reviews?")
+    Call<Review.Response> loadReviews(@Path("id") String id);
 
-    private static OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
-
-    public static <S> S createService(Class<S> serviceClass) {
-        httpClient.addInterceptor(new Interceptor() {
-            @Override
-            public Response intercept(Chain chain) throws IOException {
-                Request original = chain.request();
-                HttpUrl url = original.url()
-                        .newBuilder()
-                        .addQueryParameter(MovieConstants.API.APP_KEY_QUERY_PARAM, BuildConfig.THE_MOVIE_DATABASE_API_KEY)
-                        .build();
-                Request request = original.newBuilder().url(url).build();
-                return chain.proceed(request);
-            }
-        });
-        Retrofit retrofit = builder.client(httpClient.build()).build();
-        return retrofit.create(serviceClass);
-    }
+    @GET("3/movie/{id}/videos?")
+    Call<Trailer.Response> loadTrailers(@Path("id") String id);
 }
