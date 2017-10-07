@@ -1,6 +1,7 @@
 package com.darurats.android.popularmovies.utils;
 
 public final class MovieConstants {
+    public final static String MOVIES_TAG = "MOVIES";
     public final static String MOVIE_TAG = "MOVIE";
 
     public final static class API{

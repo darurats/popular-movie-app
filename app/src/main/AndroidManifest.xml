@@ -13,7 +13,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".ui.MainActivity"
+            android:name=".ui.MoviesActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -24,20 +24,20 @@
         <activity
             android:name=".ui.SettingsActivity"
             android:label="@string/title_activity_settings"
-            android:parentActivityName=".ui.MainActivity"
+            android:parentActivityName=".ui.MoviesActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.darurats.android.popularmovies.ui.MainActivity" />
+                android:value="com.darurats.android.popularmovies.ui.MoviesActivity" />
         </activity>
         <activity
             android:name=".ui.DetailActivity"
             android:label="@string/title_activity_detail"
-            android:parentActivityName=".ui.MainActivity"
+            android:parentActivityName=".ui.MoviesActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.darurats.android.popularmovies.ui.MainActivity" />
+                android:value="com.darurats.android.popularmovies.ui.MoviesActivity" />
         </activity>
 
         <!-- Our ContentProvider -->

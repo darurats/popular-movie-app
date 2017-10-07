@@ -14,7 +14,7 @@ import android.view.MenuItem;
 
 import com.darurats.android.popularmovies.R;
 
-public class MainActivity extends AppCompatActivity
+public class MoviesActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener{
 
     @Override

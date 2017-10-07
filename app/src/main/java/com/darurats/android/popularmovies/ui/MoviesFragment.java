@@ -22,6 +22,7 @@ import com.darurats.android.popularmovies.models.Movie;
 import com.darurats.android.popularmovies.services.MovieService;
 import com.darurats.android.popularmovies.services.MovieClient;
 import com.darurats.android.popularmovies.utils.MovieConstants;
+import com.darurats.android.popularmovies.views.StatefulRecyclerView;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -46,7 +47,7 @@ public class MoviesFragment extends Fragment
     private MovieAdapter mMovieAdapter;
 
     @BindView(R.id.rv_movies)
-    RecyclerView mRecyclerView;
+    StatefulRecyclerView mRecyclerView;
     @BindView(R.id.tv_error_message_display)
     TextView mErrorMessageDisplay;
     @BindView(R.id.pb_loading_indicator)
@@ -58,7 +59,13 @@ public class MoviesFragment extends Fragment
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        loadMovieData();
+        /* Once all of our views are setup, we can load the movie data. */
+        if (savedInstanceState != null) {
+            ArrayList<Movie> mMovies = savedInstanceState.getParcelableArrayList(MovieConstants.MOVIES_TAG);
+            mMovieAdapter.setMovieData(mMovies);
+        } else {
+            loadMovieData();
+        }
     }
 
     @Override
@@ -105,7 +112,7 @@ public class MoviesFragment extends Fragment
     }
 
     /**
-     * This method is overridden by our MainActivity class in order to handle RecyclerView item
+     * This method is overridden by our MoviesActivity class in order to handle RecyclerView item
      * clicks.
      *
      * @param movie The movie for the day that was clicked
@@ -154,7 +161,6 @@ public class MoviesFragment extends Fragment
             @Override
             protected void onStartLoading() {
                 super.onStartLoading();
-                mLoadingIndicator.setVisibility(View.VISIBLE);
 
                 if (mMoviesJson != null) {
                     deliverResult(mMoviesJson);
@@ -194,8 +200,6 @@ public class MoviesFragment extends Fragment
 
     @Override
     public void onLoadFinished(Loader<ArrayList<Movie>> loader, ArrayList<Movie> data) {
-        mLoadingIndicator.setVisibility(View.INVISIBLE);
-
         if (data != null) {
             showMovieDataView();
             mMovieAdapter.setMovieData(data);
@@ -207,6 +211,17 @@ public class MoviesFragment extends Fragment
     @Override
     public void onLoaderReset(Loader<ArrayList<Movie>> loader) {
 
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        super.onSaveInstanceState(savedInstanceState);
+
+        ArrayList<Movie> mMovies = mMovieAdapter.getMovies();
+
+        if(mMovies != null){
+            savedInstanceState.putParcelableArrayList(MovieConstants.MOVIES_TAG, mMovies);
+        }
     }
 
     @Override

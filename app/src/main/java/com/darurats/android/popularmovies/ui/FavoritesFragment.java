@@ -96,7 +96,7 @@ public class FavoritesFragment extends Fragment
     }
 
     /**
-     * This method is overridden by our MainActivity class in order to handle RecyclerView item
+     * This method is overridden by our MoviesActivity class in order to handle RecyclerView item
      * clicks.
      *
      * @param movie The movie for the day that was clicked
