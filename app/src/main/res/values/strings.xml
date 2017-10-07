@@ -31,5 +31,5 @@
     <!-- Strings related to static label -->
     <string name="static_label_overview">Overview</string>
 
-    <string name="content_authority">com.darurats.popularmovies</string>
+    <string name="content_authority">com.darurats.android.popularmovies</string>
 </resources>

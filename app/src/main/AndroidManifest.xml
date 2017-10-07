@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.darurats.popularmovies">
+    package="com.darurats.android.popularmovies">
 
     <uses-permission android:name="android.permission.INTERNET" />
 
@@ -28,7 +28,7 @@
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.darurats.popularmovies.ui.MainActivity" />
+                android:value="com.darurats.android.popularmovies.ui.MainActivity" />
         </activity>
         <activity
             android:name=".ui.DetailActivity"
@@ -37,7 +37,7 @@
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.darurats.popularmovies.ui.MainActivity" />
+                android:value="com.darurats.android.popularmovies.ui.MainActivity" />
         </activity>
 
         <!-- Our ContentProvider -->
